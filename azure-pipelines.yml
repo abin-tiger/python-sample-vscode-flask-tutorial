@@ -18,6 +18,24 @@ stages:
       dotnetSdkVersion: '5.x'
 
     steps:
+    - task: Docker@2
+      inputs:
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        tags: demo-repo:latest
+    
+    - task: ECRPushImage@1
+      inputs:
+        awsCredentials: 'sbd-aws'
+        regionName: 'us-east-1'
+        imageSource: 'imagename'
+        sourceImageName: 'demo-repo'
+        repositoryName: 'demo-repo'
+        autoCreateRepository: true
+        outputVariable: 'ECR_IMAGE'
+        logRequest: true
+        logResponse: true
+     
     
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: drop
