@@ -22,7 +22,9 @@ stages:
       inputs:
         command: 'build'
         Dockerfile: '**/Dockerfile'
-        tags: demo-repo:latest
+        repository: demo-repo
+        tags: |
+          latest
     
     - task: ECRPushImage@1
       inputs:
