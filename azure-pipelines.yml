@@ -40,6 +40,9 @@ stages:
         outputVariable: 'ecrImageName'
         logRequest: true
         logResponse: true
+    - task: CmdLine@2
+      inputs:
+        script: 'echo $(ecrImageName)'
         
     - task: CopyFiles@2
       inputs:
@@ -65,6 +68,10 @@ stages:
           steps:
           - download: current
             artifact: 'drop'
+          - task: CmdLine@2
+            inputs:
+              script: 'Deploying image $(ecrImageName)'
+
           - task: KubernetesManifest@0
             inputs:
               action: 'deploy'
