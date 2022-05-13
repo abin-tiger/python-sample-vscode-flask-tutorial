@@ -40,34 +40,28 @@ stages:
         logRequest: true
         logResponse: true
 
-# - stage: 'Dev'
-#   displayName: 'Deploy to the dev environment'
-#   dependsOn: Build
-#   condition: |
-#     and
-#     (
-#       succeeded(),
-#       eq(variables['Build.SourceBranchName'], variables['releaseBranchName'])
-#     )
-#   jobs:
-#   - deployment: Deploy
-#     pool:
-#       vmImage: 'ubuntu-20.04'
-#     # environment: dev
-#     # variables:
-#     # - group: Release
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - download: current
-#             artifact: drop
-#           - task: AzureWebApp@1
-#             displayName: 'Azure App Service Deploy: website'
-#             inputs:
-#               azureSubscription: 'Resource Manager - Tailspin - Space Game'
-#               appName: '$(WebAppNameDev)'
-#               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+- stage: 'Dev'
+  displayName: 'Deploy to the dev environment'
+  dependsOn: Build
+  jobs:
+  - deployment: Deploy
+    pool:
+      vmImage: 'ubuntu-20.04'
+    environment: dev
+    # variables:
+    # - group: Release
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: KubernetesManifest@0
+            inputs:
+              action: 'deploy'
+              kubernetesServiceConnection: 'mlops-sandbox-cluster'
+              namespace: 'dev'
+              manifests: 'manifests/deployment.yaml'
+              containers: '$(ecrImageName)''
+              
 
 # - stage: 'Test'
 #   displayName: 'Deploy to the test environment'
