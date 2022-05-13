@@ -4,7 +4,8 @@ trigger:
 variables:
   releaseBranchName: 'release'
   tag: '$(Build.BuildId)'
-  imageRepository: 'demo-repo'
+  imageRepository: '335638954766.dkr.ecr.us-east-1.amazonaws.com/demo-repo'
+  ecrImageName: ''
 
 stages:
 - stage: 'Build'
