@@ -34,6 +34,8 @@ stages:
         regionName: 'us-east-1'
         imageSource: 'imagename'
         sourceImageName: $(imageRepository)
+        sourceImageTag: $(tag)
+        pushTag: $(tag)
         repositoryName: $(imageRepository)
         autoCreateRepository: true
         outputVariable: 'ecrImageName'
@@ -61,7 +63,7 @@ stages:
               namespace: 'dev'
               manifests: 'manifests/deployment.yaml'
               containers: '$(ecrImageName)''
-              
+
 
 # - stage: 'Test'
 #   displayName: 'Deploy to the test environment'
