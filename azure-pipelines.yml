@@ -44,8 +44,7 @@ stages:
         
     - task: CopyFiles@2
       inputs:
-        SourceFolder: 'manifests/'
-        Contents: '**'
+        Contents: 'manifests/**'
         TargetFolder: '''$(Build.ArtifactStagingDirectory)'''
     
     - publish: '$(Build.ArtifactStagingDirectory)'
