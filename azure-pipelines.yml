@@ -57,6 +57,8 @@ stages:
   dependsOn: Build
   jobs:
   - deployment: Deploy
+    variables:
+      ecrImageName: $[ stageDependencies.Build.Build.outputs['ecrImageName'] ]
     pool:
       vmImage: 'ubuntu-20.04'
     environment: dev
