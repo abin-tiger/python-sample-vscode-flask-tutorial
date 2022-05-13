@@ -41,6 +41,15 @@ stages:
         outputVariable: 'ecrImageName'
         logRequest: true
         logResponse: true
+        
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'manifests/'
+        Contents: '**'
+        TargetFolder: '''$(Build.ArtifactStagingDirectory)'''
+    
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      artifact: drop
 
 - stage: 'Dev'
   displayName: 'Deploy to the dev environment'
