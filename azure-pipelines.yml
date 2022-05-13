@@ -15,9 +15,6 @@ stages:
     pool:
       vmImage: 'ubuntu-20.04'
 
-    variables:
-      example: 'example'
-
     steps:
     - task: Docker@2
       inputs:
@@ -28,6 +25,7 @@ stages:
           $(tag)
     
     - task: ECRPushImage@1
+      name: 'pushToECR'
       inputs:
         awsCredentials: 'sbd-aws'
         regionName: 'us-east-1'
@@ -58,7 +56,7 @@ stages:
   jobs:
   - deployment: Deploy
     variables:
-      ecrImageName: $[ stageDependencies.Build.Build.outputs['ecrImageName'] ]
+      ecrImageName: $[ stageDependencies.Build.Build.outputs['pushToECR.ecrImageName'] ]
     pool:
       vmImage: 'ubuntu-20.04'
     environment: dev
