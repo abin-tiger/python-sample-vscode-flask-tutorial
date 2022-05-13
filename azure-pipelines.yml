@@ -64,7 +64,7 @@ stages:
         deploy:
           steps:
           - download: current
-            artifact: 'manifests'
+            artifact: 'drop'
           - task: KubernetesManifest@0
             inputs:
               action: 'deploy'
