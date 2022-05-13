@@ -3,6 +3,8 @@ trigger:
 
 variables:
   releaseBranchName: 'release'
+  tag: '$(Build.BuildId)'
+  imageRepository: 'demo-repo'
 
 stages:
 - stage: 'Build'
@@ -22,25 +24,21 @@ stages:
       inputs:
         command: 'build'
         Dockerfile: '**/Dockerfile'
-        repository: demo-repo
+        repository: $(imageRepository)
         tags: |
-          latest
+          $(tag)
     
     - task: ECRPushImage@1
       inputs:
         awsCredentials: 'sbd-aws'
         regionName: 'us-east-1'
         imageSource: 'imagename'
-        sourceImageName: 'demo-repo'
-        repositoryName: 'demo-repo'
+        sourceImageName: $(imageRepository)
+        repositoryName: $(imageRepository)
         autoCreateRepository: true
-        outputVariable: 'ECR_IMAGE'
+        outputVariable: 'ecrImageName'
         logRequest: true
         logResponse: true
-     
-    
-    - publish: '$(Build.ArtifactStagingDirectory)'
-      artifact: drop
 
 # - stage: 'Dev'
 #   displayName: 'Deploy to the dev environment'
