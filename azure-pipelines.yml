@@ -62,7 +62,7 @@ stages:
               kubernetesServiceConnection: 'mlops-sandbox-cluster'
               namespace: 'dev'
               manifests: 'manifests/deployment.yaml'
-              containers: '$(ecrImageName)''
+              containers: '$(ecrImageName)'
 
 
 # - stage: 'Test'
