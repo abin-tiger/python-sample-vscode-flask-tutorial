@@ -72,7 +72,7 @@ stages:
             artifact: 'drop'
           - task: CmdLine@2
             inputs:
-              script: 'Deploying image $(ecrImageName)'
+              script: 'echo "Deploying image $(ecrImageName)"'
 
           - task: KubernetesManifest@0
             inputs:
