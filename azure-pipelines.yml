@@ -43,11 +43,11 @@ stages:
         
     - task: CopyFiles@2
       inputs:
-        Contents: 'manifests/**'
-        TargetFolder: '''$(Build.ArtifactStagingDirectory)'''
-    
-    - publish: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'manifests'
+        sourceFolder: $(Build.SourcesDirectory)/manifests
+        targetFolder: $(Build.ArtifactStagingDirectory)/k8s/manifests
+
+    - publish: $(build.artifactStagingDirectory)
+      artifact: drop
 
 - stage: 'Dev'
   displayName: 'Deploy to the dev environment'
@@ -70,7 +70,7 @@ stages:
               action: 'deploy'
               kubernetesServiceConnection: 'mlops-sandbox-cluster'
               namespace: 'dev'
-              manifests: 'manifests/deployment.yaml'
+              manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
               containers: '$(ecrImageName)'
 
 
