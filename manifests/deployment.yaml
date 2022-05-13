@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: app
-        image: demo-image:latest
+        image: 335638954766.dkr.ecr.us-east-1.amazonaws.com/demo-repo:latest
         ports:
         - containerPort: 5000
