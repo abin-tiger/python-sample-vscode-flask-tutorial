@@ -1,0 +1,18 @@
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - pwsh: |
+        $greeting = "Hello World"
+        Write-Host "##vso[task.setvariable variable=StepVariable;isOutput=true]${greeting}"
+      name: BuildStep
+ 
+- stage: Test
+  dependsOn: Build
+  jobs:
+  - job: TestJob
+    variables:
+      Magic: $[stageDependencies.Build.BuildJob.outputs['BuildStep.StepVariable']]
+    steps:
+    - powershell: Write-Host "$(Magic)"
