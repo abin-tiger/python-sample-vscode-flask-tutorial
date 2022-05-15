@@ -35,20 +35,13 @@ stages:
         pushTag: $(tag)
         repositoryName: $(imageRepository)
         autoCreateRepository: true
-        outputVariable: 'ecrImageName'
+        outputVariable: 'ecrPushOutput'
         logRequest: true
         logResponse: true
 
     - pwsh: |
-        Write-Host "##vso[task.setvariable variable=StepVariable;isOutput=true]$(ecrImageName)"
-      name: BuildStep
- 
-    - task: CmdLine@2
-      inputs:
-        script: 'echo $(ecrImageName)'
-    - task: CmdLine@2
-      inputs:
-        script: echo '$(StepVariable)'
+        Write-Host "##vso[task.setvariable variable=ecrImage;isOutput=true]$(ecrPushOutput)"
+      name: ECRImageOutputStep
         
     - task: CopyFiles@2
       inputs:
@@ -64,7 +57,7 @@ stages:
   jobs:
   - deployment: Deploy
     variables:
-      ecrImageName: $[stageDependencies.Build.Build.outputs['BuildStep.StepVariable']]
+      ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
     pool:
       vmImage: 'ubuntu-20.04'
     environment: dev
@@ -78,7 +71,7 @@ stages:
             artifact: 'drop'
           - task: CmdLine@2
             inputs:
-              script: 'echo "Deploying image $(ecrImageName)"'
+              script: echo "Deploying image $(ecrImageName)"
 
           - task: KubernetesManifest@0
             inputs:
@@ -98,14 +91,17 @@ stages:
     pool:
       vmImage: 'ubuntu-20.04'
     environment: prod
-    # variables:
-    # - group: 'Release'
+    variables:
+      ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
     strategy:
       runOnce:
         deploy:
           steps:
           - download: current
             artifact: 'drop'
+          - task: CmdLine@2
+            inputs:
+              script: echo "Deploying image $(ecrImageName)"
           - task: KubernetesManifest@0
             inputs:
               action: 'deploy'
