@@ -38,9 +38,17 @@ stages:
         outputVariable: 'ecrImageName'
         logRequest: true
         logResponse: true
+
+    - pwsh: |
+        Write-Host "##vso[task.setvariable variable=StepVariable;isOutput=true]$(ecrImageName)"
+      name: BuildStep
+ 
     - task: CmdLine@2
       inputs:
         script: 'echo $(ecrImageName)'
+    - task: CmdLine@2
+      inputs:
+        script: 'Stepvariable $(StepVariable)'
         
     - task: CopyFiles@2
       inputs:
@@ -56,7 +64,7 @@ stages:
   jobs:
   - deployment: Deploy
     variables:
-      ecrImageName: $[stageDependencies.Build.Build.outputs['PushToECR.ecrImageName']]
+      ecrImageName: $[stageDependencies.Build.Build.outputs['BuildStep.StepVariable']]
     pool:
       vmImage: 'ubuntu-20.04'
     environment: dev
