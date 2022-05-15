@@ -48,7 +48,7 @@ stages:
         script: 'echo $(ecrImageName)'
     - task: CmdLine@2
       inputs:
-        script: 'Stepvariable $(StepVariable)'
+        script: 'echo $(StepVariable)'
         
     - task: CopyFiles@2
       inputs:
