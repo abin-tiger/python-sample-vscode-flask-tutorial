@@ -1,3 +1,5 @@
+trigger: none
+
 stages:
 - stage: Build
   jobs:
