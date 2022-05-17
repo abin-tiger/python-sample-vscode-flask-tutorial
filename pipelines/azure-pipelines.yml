@@ -15,6 +15,21 @@ stages:
       vmImage: 'ubuntu-20.04'
 
     steps:
+    - script: pip install -r requirements.txt
+      displayName: 'Install requirements'
+
+    - script: |
+        pip install pytest pytest-azurepipelines
+        pip install pytest-cov
+        python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=hello_app --cov-report=xml
+      displayName: 'pytest'
+
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/test-*.xml'
+        testRunTitle: 'Publish test results for Hello App'
+
     - task: Docker@2
       inputs:
         command: 'build'
