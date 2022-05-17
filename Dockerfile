@@ -12,7 +12,7 @@ EXPOSE 5000
 
 COPY requirements.txt requirements.txt
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Indicate where uwsgi.ini lives
 ENV UWSGI_INI uwsgi.ini
