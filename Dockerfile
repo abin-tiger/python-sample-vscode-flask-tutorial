@@ -10,6 +10,10 @@ FROM tiangolo/uwsgi-nginx:python3.8-alpine-2020-12-19
 ENV LISTEN_PORT=5000
 EXPOSE 5000
 
+COPY requirements.txt requirements.txt
+
+RUN pip install -r requirements.txt
+
 # Indicate where uwsgi.ini lives
 ENV UWSGI_INI uwsgi.ini
 
