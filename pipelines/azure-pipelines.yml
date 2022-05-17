@@ -2,7 +2,6 @@ trigger:
 - master
 
 variables:
-  releaseBranchName: 'release'
   tag: '$(Build.BuildId)'
   imageRepository: 'demo-repo'
 
