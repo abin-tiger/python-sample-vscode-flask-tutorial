@@ -1,15 +1,23 @@
 trigger:
 - master
 
+parameters:
+- name: test
+  displayName: Run Tests?
+  type: boolean
+  default: true
+
 variables:
-  tag: '$(Build.BuildId)'
-  group: flask-app
+  - name: tag
+    value: '$(Build.BuildId)'
+  - group: flask-app-common
 
 stages:
 - stage: 'Build'
   displayName: 'Build the web application'
   jobs: 
   - job: 'UnitTests'
+    condition:  eq('${{ parameters.test }}', 'true')
     displayName: "Run unit tests"
 
     steps:
@@ -75,12 +83,12 @@ stages:
   jobs:
   - deployment: Deploy
     variables:
-      ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    - name: ecrImageName
+      value: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    - group: flask-app-dev
     pool:
       vmImage: 'ubuntu-20.04'
     environment: dev
-    # variables:
-    # - group: Release
     strategy:
       runOnce:
         deploy:
@@ -95,7 +103,7 @@ stages:
             inputs:
               action: 'deploy'
               kubernetesServiceConnection: 'mlops-sandbox-cluster'
-              namespace: 'dev'
+              namespace: '$(namespace)'
               manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
               containers: '$(ecrImageName)'
 
@@ -105,14 +113,15 @@ stages:
   dependsOn:
   - Build
   - Dev
-  #condition: eq(variables['Build.Reason'], 'Schedule')
   jobs:
   - deployment: Deploy
     pool:
       vmImage: 'ubuntu-20.04'
     environment: prod
     variables:
-      ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    - name: ecrImageName
+      value: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    - group: flask-app-prod
     strategy:
       runOnce:
         deploy:
@@ -126,6 +135,6 @@ stages:
             inputs:
               action: 'deploy'
               kubernetesServiceConnection: 'mlops-sandbox-cluster'
-              namespace: 'prod'
+              namespace: '$(namespace)'
               manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
               containers: '$(ecrImageName)'
