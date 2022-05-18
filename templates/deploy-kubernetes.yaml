@@ -7,8 +7,8 @@ parameters:
   type: string  
 
 stages:
-- stage: 'Dev'
-  displayName: 'Deploy to the dev environment'
+- stage: ${{parameters.environment}}
+  displayName: 'Deploy to the ${{parameters.environment}} environment'
   dependsOn: Build
   jobs:
   - deployment: Deploy
