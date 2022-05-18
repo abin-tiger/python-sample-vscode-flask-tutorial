@@ -13,7 +13,7 @@ parameters:
 variables:
   - name: tag
     value: '$(Build.BuildId)'
-  - name: ecrImage
+  - name: ecrImageName
     value: ''
   - group: flask-app-common
 
@@ -71,7 +71,7 @@ stages:
         logResponse: true
 
     - pwsh: |
-        Write-Host "##vso[task.setvariable variable=ecrImage;isOutput=true]$(ecrPushOutput)"
+        Write-Host "##vso[task.setvariable variable=ecrImageName;isOutput=true]$(ecrPushOutput)"
       name: ECRImageOutputStep
         
     - task: CopyFiles@2
