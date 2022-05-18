@@ -13,6 +13,8 @@ parameters:
 variables:
   - name: tag
     value: '$(Build.BuildId)'
+  - name: ecrImage
+    value: ''
   - group: flask-app-common
 
 stages:
@@ -86,8 +88,8 @@ stages:
   jobs:
   - deployment: Deploy
     variables:
-    - name: ecrImageName
-      value: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    # - name: ecrImageName
+    #   value: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
     - group: flask-app-dev
     pool:
       vmImage: 'ubuntu-20.04'
@@ -122,8 +124,8 @@ stages:
       vmImage: 'ubuntu-20.04'
     environment: prod
     variables:
-    - name: ecrImageName
-      value: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    # - name: ecrImageName
+    #   value: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
     - group: flask-app-prod
     strategy:
       runOnce:
