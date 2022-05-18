@@ -3,6 +3,7 @@ trigger:
 
 variables:
   tag: '$(Build.BuildId)'
+  group: flask-app
 
 stages:
 - stage: 'Build'
