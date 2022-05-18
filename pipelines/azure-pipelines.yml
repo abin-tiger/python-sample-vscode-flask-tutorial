@@ -3,7 +3,6 @@ trigger:
 
 variables:
   tag: '$(Build.BuildId)'
-  imageRepository: 'demo-repo'
 
 stages:
 - stage: 'Build'
