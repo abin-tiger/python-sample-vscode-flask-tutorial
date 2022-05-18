@@ -1,0 +1,38 @@
+parameters:
+- name: "environment"
+  type: string
+- name: 'variableGroup'    
+  type: string
+- name: 'ecrImageName'    
+  type: string  
+
+stages:
+- stage: 'Dev'
+  displayName: 'Deploy to the dev environment'
+  dependsOn: Build
+  jobs:
+  - deployment: Deploy
+    variables:
+    - name: ecrImageName
+      value: ${{parameters.ecrImageName}}
+    - group: ${{parameters.variableGroup}}
+    pool:
+      vmImage: 'ubuntu-20.04'
+    environment: dev
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: 'drop'
+          - task: CmdLine@2
+            inputs:
+              script: echo "Deploying image $(ecrImageName)"
+
+          - task: KubernetesManifest@0
+            inputs:
+              action: 'deploy'
+              kubernetesServiceConnection: 'mlops-sandbox-cluster'
+              namespace: '$(namespace)'
+              manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
+              containers: '$(ecrImageName)'
