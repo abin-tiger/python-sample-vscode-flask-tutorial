@@ -5,11 +5,13 @@ parameters:
   type: string
 - name: 'ecrImageName'    
   type: string  
+- name: 'dependsOn'    
+  type: string  
 
 stages:
 - stage: ${{parameters.environment}}
   displayName: 'Deploy to the ${{parameters.environment}} environment'
-  dependsOn: Build
+  dependsOn: ${{parameters.dependsOn}}
   jobs:
   - deployment: Deploy
     variables:
