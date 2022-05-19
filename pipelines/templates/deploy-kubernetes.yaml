@@ -23,7 +23,7 @@ jobs:
           artifact: 'drop'
         - task: CmdLine@2
           inputs:
-            script: echo "Deploying image $(ecrImageName)"
+            script: echo "Deploying image ${{parameters.ecrImageName}}"
 
         - task: KubernetesManifest@0
           inputs:
@@ -31,4 +31,4 @@ jobs:
             kubernetesServiceConnection: 'mlops-sandbox-cluster'
             namespace: '$(namespace)'
             manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
-            containers: '$(ecrImageName)'
+            containers: '${{parameters.ecrImageName}}'
