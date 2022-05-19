@@ -86,34 +86,8 @@ stages:
     variableGroup: flask-app-dev
     ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
 
-
-- stage: 'Prod'
-  displayName: 'Deploy to the prod environment'
-  dependsOn:
-  - Build
-  - Dev
-  jobs:
-  - deployment: Deploy
-    pool:
-      vmImage: 'ubuntu-20.04'
-    environment: prod
-    variables:
-    - name: ecrImageName
-      value: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
-    - group: flask-app-prod
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: 'drop'
-          - task: CmdLine@2
-            inputs:
-              script: echo "Deploying image $(ecrImageName)"
-          - task: KubernetesManifest@0
-            inputs:
-              action: 'deploy'
-              kubernetesServiceConnection: 'mlops-sandbox-cluster'
-              namespace: '$(namespace)'
-              manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
-              containers: '$(ecrImageName)'
+- template: templates/deploy-kubernetes.yaml
+  parameters:
+    environment: Prod
+    variableGroup: flask-app-prod
+    ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
