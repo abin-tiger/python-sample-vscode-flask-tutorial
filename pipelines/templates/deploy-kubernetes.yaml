@@ -4,37 +4,31 @@ parameters:
 - name: 'variableGroup'    
   type: string
 - name: 'ecrImageName'    
-  type: string  
-- name: 'dependsOn'    
-  type: string  
+  type: string
 
-stages:
-- stage: ${{parameters.environment}}
-  displayName: 'Deploy to the ${{parameters.environment}} environment'
-  dependsOn: ${{parameters.dependsOn}}
-  jobs:
-  - deployment: Deploy
-    variables:
-    - name: ecrImageName
-      value: ${{parameters.ecrImageName}}
-    - group: ${{parameters.variableGroup}}
-    pool:
-      vmImage: 'ubuntu-20.04'
-    environment: dev
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: 'drop'
-          - task: CmdLine@2
-            inputs:
-              script: echo "Deploying image $(ecrImageName)"
+jobs:
+- deployment: Deploy
+  variables:
+  - name: ecrImageName
+    value: ${{parameters.ecrImageName}}
+  - group: ${{parameters.variableGroup}}
+  pool:
+    vmImage: 'ubuntu-20.04'
+  environment: ${{parameters.environment}}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - download: current
+          artifact: 'drop'
+        - task: CmdLine@2
+          inputs:
+            script: echo "Deploying image $(ecrImageName)"
 
-          - task: KubernetesManifest@0
-            inputs:
-              action: 'deploy'
-              kubernetesServiceConnection: 'mlops-sandbox-cluster'
-              namespace: '$(namespace)'
-              manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
-              containers: '$(ecrImageName)'
+        - task: KubernetesManifest@0
+          inputs:
+            action: 'deploy'
+            kubernetesServiceConnection: 'mlops-sandbox-cluster'
+            namespace: '$(namespace)'
+            manifests: '$(Pipeline.Workspace)/drop/k8s/manifests/deployment.yaml'
+            containers: '$(ecrImageName)'

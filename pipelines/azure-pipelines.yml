@@ -80,16 +80,22 @@ stages:
     - publish: $(build.artifactStagingDirectory)
       artifact: drop
 
-- template: templates/deploy-kubernetes.yaml
-  parameters:
-    environment: Dev
-    variableGroup: flask-app-dev
-    ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
-    dependsOn: Build
+- stage: Dev
+  displayName: 'Deploy to the Dev environment'
+  dependsOn: Build
+  jobs:
+  - template: templates/deploy-kubernetes.yaml
+    parameters:
+      variableGroup: flask-app-dev
+      ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+      environment: dev
 
-- template: templates/deploy-kubernetes.yaml
-  parameters:
-    environment: Prod
-    variableGroup: flask-app-prod
-    ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
-    dependsOn: Dev
+- stage: Prod
+  displayName: 'Deploy to the Prod environment'
+  dependsOn: Dev
+  jobs:
+  - template: templates/deploy-kubernetes.yaml
+    parameters:
+      variableGroup: flask-app-prod
+      ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+      environment: prod
