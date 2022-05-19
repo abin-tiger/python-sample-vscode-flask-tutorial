@@ -85,9 +85,11 @@ stages:
     environment: Dev
     variableGroup: flask-app-dev
     ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    dependsOn: Build
 
 - template: templates/deploy-kubernetes.yaml
   parameters:
     environment: Prod
     variableGroup: flask-app-prod
     ecrImageName: $[stageDependencies.Build.Build.outputs['ECRImageOutputStep.ecrImage']]
+    dependsOn: Dev
