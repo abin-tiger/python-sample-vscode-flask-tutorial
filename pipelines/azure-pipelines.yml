@@ -40,6 +40,7 @@ stages:
         testRunTitle: 'Publish test results for Hello App'
 
   - job: 'Build'
+    dependsOn: UnitTests
     displayName: 'Build job'
     pool:
       vmImage: 'ubuntu-20.04'
