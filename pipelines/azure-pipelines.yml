@@ -80,6 +80,15 @@ stages:
 
     - publish: $(build.artifactStagingDirectory)
       artifact: drop
+    # Publish a Universal Package
+    - task: UniversalPackages@0
+      displayName: Universal Publish
+      inputs:
+        command: publish
+        publishDirectory: '$(Build.ArtifactStagingDirectory)'
+        vstsFeedPublish: 'learning/python-sample-vscode-flask-tutorial'
+        vstsFeedPackagePublish: 'python-sample-vscode-flask-tutorial'
+        packagePublishDescription: 'Python Flask application'
 
 - stage: Dev
   displayName: 'Deploy to the Dev environment'
