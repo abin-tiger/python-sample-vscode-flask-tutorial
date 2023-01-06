@@ -51,7 +51,7 @@ stages:
         command: 'build'
         Dockerfile: '**/Dockerfile'
         repository: $(imageRepository)
-        arguments: --platform linux/arm64,linux/amd64
+        arguments: '--platform linux/amd64,linux/arm64'
         tags: |
           $(tag)
     
