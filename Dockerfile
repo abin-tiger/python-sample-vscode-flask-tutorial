@@ -1,6 +1,8 @@
 # Pull a pre-built alpine docker image with nginx and python3 installed
 FROM python:3.8
 
+COPY --from=pyroscope/pyroscope:latest /usr/bin/pyroscope /usr/bin/pyroscope
+
 # Set the port on which the app runs; make both values the same.
 #
 # IMPORTANT: When deploying to Azure App Service, go to the App Service on the Azure 
