@@ -41,7 +41,7 @@ def isPrime(n):
 def prime():
     
     primes = [x for x in range(1,100000) if isPrime(x) ==True]
-    return sum(primes)
+    return str(sum(primes))
 
 
 @app.route("/hello/")
