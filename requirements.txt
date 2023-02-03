@@ -1,1 +1,3 @@
 Flask
+pyroscope-io
+gunicorn
