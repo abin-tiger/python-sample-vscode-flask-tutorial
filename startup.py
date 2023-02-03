@@ -12,11 +12,11 @@ startup:app in the Gunicorn command.
 import pyroscope
 import os
 
-pyroscope.configure(
-  application_name = "my.python.app", # replace this with some name for your application
-  server_address = os.environ["PYROSCOPE_SERVER_ADDRESS"],
-  detect_subprocesses = True
-)
+# pyroscope.configure(
+#   application_name = "my.python.app", # replace this with some name for your application
+#   server_address = os.environ["PYROSCOPE_SERVER_ADDRESS"],
+#   detect_subprocesses = True
+# )
 
 from hello_app.webapp import app
 
