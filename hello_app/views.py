@@ -1,4 +1,5 @@
 from datetime import datetime
+import math
 from flask import Flask, render_template
 from . import app
 
@@ -21,6 +22,27 @@ def sleep():
     import random
     time.sleep(random.random())
     return "hello"
+
+def isPrime(n):
+   if n == 1:
+      return False
+   if n == 2:
+      return True
+   if n > 2 and n % 2 ==0:
+      return False
+
+   max_divisor = math.floor(math.sqrt(n))
+   for d in range(3, 1 + max_divisor,2):
+     if n % d ==0:
+        return False
+   return True
+
+@app.route("/prime/")
+def prime():
+    
+    primes = [x for x in range(1,100000) if isPrime(x) ==True]
+    print(sum(primes))
+
 
 @app.route("/hello/")
 @app.route("/hello/<name>")
