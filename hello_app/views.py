@@ -1,6 +1,9 @@
 from datetime import datetime
 from flask import Flask, render_template
 from . import app
+import boto3
+
+s3 = boto3.client("s3")
 
 @app.route("/")
 def home():
@@ -12,6 +15,7 @@ def about():
 
 @app.route("/contact/")
 def contact():
+    s3.list_buckets()
     return render_template("contact.html")
 
 @app.route("/hello/")
