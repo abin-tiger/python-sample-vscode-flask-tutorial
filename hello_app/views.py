@@ -14,6 +14,14 @@ def about():
 def contact():
     return render_template("contact.html")
 
+@app.route("/sleep/")
+def sleep():
+    
+    import time
+    import random
+    time.sleep(random.random())
+    return "hello"
+
 @app.route("/hello/")
 @app.route("/hello/<name>")
 def hello_there(name = None):
